@@ -11,6 +11,8 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 //Registra o Service do Repository
 builder.Services.AddSingleton<ProdutoRepository>(provider => new ProdutoRepository(connectionString));
+builder.Services.AddSingleton<UsuarioRepository>(provider => new UsuarioRepository(connectionString));
+builder.Services.AddSingleton<CarrinhoRepository>(provider => new CarrinhoRepository(connectionString));
 
 
 //Swagger Parte 1
