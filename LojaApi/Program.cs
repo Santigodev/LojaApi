@@ -13,6 +13,7 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddSingleton<ProdutoRepository>(provider => new ProdutoRepository(connectionString));
 builder.Services.AddSingleton<UsuarioRepository>(provider => new UsuarioRepository(connectionString));
 builder.Services.AddSingleton<CarrinhoRepository>(provider => new CarrinhoRepository(connectionString));
+builder.Services.AddSingleton<PedidoRepository>(provider => new PedidoRepository(connectionString));
 
 
 //Swagger Parte 1
