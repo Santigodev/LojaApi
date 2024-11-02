@@ -61,6 +61,20 @@ namespace LojaApi.Repositories
                     throw new InvalidOperationException("O produto está em um carrinho ativo e não pode ser excluído.");
                 }
 
+                // Consulta se o produto está em algum pedido em andamento
+                var sqlPedidoAndamento = @"
+                    SELECT COUNT(*)
+                    FROM PedidoProdutos pp
+                    JOIN Pedidos p ON pp.PedidoId = p.Id
+                    WHERE pp.ProdutoId = @Id AND p.StatusPedido = 'Em andamento'";
+
+                var pedidoExists = await conn.ExecuteScalarAsync<int>(sqlPedidoAndamento, new { Id = id });
+
+                if (pedidoExists > 0)
+                {
+                    throw new InvalidOperationException("O produto está em um pedido em andamento e dessa forma não pode ser excluído");
+                }
+
                 var sqlExcluirProduto = "DELETE FROM Produtos WHERE Id = @Id";
                 return await conn.ExecuteAsync(sqlExcluirProduto, new { Id = id });
             }
