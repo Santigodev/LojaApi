@@ -52,5 +52,20 @@ namespace LojaApi.Controllers
 
             return Ok(historicoPedidos);
         }
+
+        [HttpPut("atualizar-status")]
+        public async Task<IActionResult> AtualizarStatusPedido(int pedidoId, [FromBody] string novoStatus)
+        {
+            try
+            {
+                await _pedidoRepository.AtualizarStatusPedidoDB(pedidoId, novoStatus);
+
+                return Ok(new { mensagem = "Status do pedido atualizado" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
     }
 }

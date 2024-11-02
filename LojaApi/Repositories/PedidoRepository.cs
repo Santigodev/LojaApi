@@ -115,5 +115,16 @@ namespace LojaApi.Repositories
                 return await conn.QueryAsync<dynamic>(sql, new { UsuarioId = usuarioId });
             }
         }
+
+        public async Task<int> AtualizarStatusPedidoDB(int pedidoId, string novoStatus)
+        {
+            using (var conn = Connection)
+            {
+                var sql = "UPDATE Pedidos SET StatusPedido = @NovoStatus WHERE Id = @PedidoId";
+                var item = await conn.ExecuteAsync(sql, new { PedidoId = pedidoId, NovoStatus = novoStatus });
+
+                return item;
+            }
+        }
     }
 }
