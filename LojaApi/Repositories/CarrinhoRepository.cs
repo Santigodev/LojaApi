@@ -19,6 +19,16 @@ namespace LojaApi.Repositories
         {
             using (var conn = Connection)
             {
+                //Validação de estoque ao adicionar ao carrinho
+                var sqlEstoque = "SELECT QuantidadeEstoque FROM Produtos WHERE Id = @ProdutoId";
+                var quantidadeEstoque = await conn.ExecuteScalarAsync<int>(sqlEstoque, new { ProdutoId = produtoId });
+
+                //Verificar se há quantidade suficiente em estoque
+                if (quantidade > quantidadeEstoque)
+                {
+                    throw new InvalidOperationException("Produto sem estoque!!");
+                }
+
                 //Consultaa se o produto já tá no carrinho
                 var sqlVerificarProdutoCarrinho = "SELECT COUNT(*) FROM Carrinho WHERE UsuarioId = @UsuarioId AND ProdutoId = @ProdutoId";
                 var produtoExists = await conn.ExecuteScalarAsync<int>(sqlVerificarProdutoCarrinho, new { UsuarioId = usuarioId, ProdutoId = produtoId });
