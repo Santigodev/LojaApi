@@ -52,6 +52,15 @@ namespace LojaApi.Repositories
                             item.Quantidade,
                             item.Preco
                         }, transaction);
+
+                        //Atualização automática do estoque
+                        var sqlAtualizaEstoque = "UPDATE Produtos SET QuantidadeEstoque = QuantidadeEstoque - @Quantidade " +
+                                                  "WHERE Id = @ProdutoId AND QuantidadeEstoque >= @Quantidade";
+                        var linhasAfetadas = await conn.ExecuteAsync(sqlAtualizaEstoque, new
+                        {
+                            ProdutoId = item.ProdutoId,
+                            Quantidade = item.Quantidade
+                        }, transaction);
                     }
 
                     var sqlLimparCarrinho = "DELETE FROM Carrinho WHERE UsuarioId = @UsuarioId";
