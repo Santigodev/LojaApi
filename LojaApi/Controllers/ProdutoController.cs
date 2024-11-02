@@ -54,5 +54,13 @@ namespace LojaApi.Controllers
                 return BadRequest(new { mensagem = ex.Message });
             }
         }
+
+        [HttpGet("buscar-produtos-filtro")]
+        public async Task<IActionResult> BuscarProdutosPorFiltro([FromQuery] string? nome, [FromQuery] string? descricao, [FromQuery] decimal? precoMin, [FromQuery] decimal? precoMax)
+        {
+            var produtos = await _produtoRepository.BuscarProdutosPorFiltroDB(nome, descricao, precoMin, precoMax);
+
+            return Ok(produtos);
+        }
     }
 }

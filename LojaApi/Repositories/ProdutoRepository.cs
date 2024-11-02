@@ -65,5 +65,38 @@ namespace LojaApi.Repositories
                 return await conn.ExecuteAsync(sqlExcluirProduto, new { Id = id });
             }
         }
+
+        public async Task<IEnumerable<Produto>> BuscarProdutosPorFiltroDB(string? nome = null, string? descricao = null, decimal? precoMin = null, decimal? precoMax = null)
+        {
+            using (var conn = Connection)
+            {
+                var sql = "SELECT * FROM Produtos WHERE 1=1";
+
+                if (!string.IsNullOrEmpty(nome))
+                {
+                    sql += " AND Nome LIKE @Nome";
+                }
+                if (!string.IsNullOrEmpty(descricao))
+                {
+                    sql += " AND Descricao LIKE @Descricao";
+                }
+                if (precoMin.HasValue)
+                {
+                    sql += " AND Preco >= @PrecoMin";
+                }
+                if (precoMax.HasValue)
+                {
+                    sql += " AND Preco <= @PrecoMax";
+                }
+
+                return await conn.QueryAsync<Produto>(sql, new
+                {
+                    Nome = $"%{nome}%",
+                    Descricao = $"%{descricao}%",
+                    PrecoMin = precoMin,
+                    PrecoMax = precoMax
+                });
+            }
+        }
     }
 }
