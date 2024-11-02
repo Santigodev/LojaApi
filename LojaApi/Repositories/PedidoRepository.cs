@@ -97,5 +97,23 @@ namespace LojaApi.Repositories
                 return await conn.ExecuteScalarAsync<string>(sql, new { PedidoId = pedidoId });
             }
         }
+
+        public async Task<IEnumerable<dynamic>> ConsultarHistoricoCompletoPedidosDB(int usuarioId)
+        {
+            using (var conn = Connection)
+            {
+                var sql = @"
+                    SELECT p.Id AS PedidoId, p.DataPedido, p.StatusPedido, p.ValorTotal,
+                           pp.ProdutoId, pr.Nome AS ProdutoNome, pr.Descricao AS ProdutoDescricao,
+                           pp.Quantidade, pp.Preco
+                    FROM Pedidos p
+                    JOIN PedidoProdutos pp ON p.Id = pp.PedidoId
+                    JOIN Produtos pr ON pp.ProdutoId = pr.Id
+                    WHERE p.UsuarioId = @UsuarioId
+                    ORDER BY p.DataPedido DESC";
+
+                return await conn.QueryAsync<dynamic>(sql, new { UsuarioId = usuarioId });
+            }
+        }
     }
 }

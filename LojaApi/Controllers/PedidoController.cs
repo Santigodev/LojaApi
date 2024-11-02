@@ -44,5 +44,13 @@ namespace LojaApi.Controllers
             
             return Ok(new { pedidoId, status });
         }
+
+        [HttpGet("historico-pedidos")]
+        public async Task<IActionResult> ConsultarHistoricoPedidos(int usuarioId)
+        {
+            var historicoPedidos = await _pedidoRepository.ConsultarHistoricoCompletoPedidosDB(usuarioId);
+
+            return Ok(historicoPedidos);
+        }
     }
 }
